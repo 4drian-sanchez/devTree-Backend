@@ -56,4 +56,14 @@ router.post('/user/image',
     UserController.uploadImage
 )
 
+router.get('/:handle', UserController.getUserByHandle)
+
+router.post('/search', 
+    body('handle')
+    .notEmpty()
+    .withMessage('El handle no puede ir vacio'),
+    validationInputsErrors,
+    UserController.getHandle
+)
+
 export default router

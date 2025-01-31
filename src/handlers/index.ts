@@ -114,6 +114,38 @@ class UserController {
             res.status(500).json({error: error.message})
         }
     }
+
+    static getUserByHandle =  async (req: Request, res: Response) => { 
+        try {
+            const {handle} = req.params
+            const user = await User.findOne({handle}).select('-password -email -v -_id')
+            if(!user) {
+                const error = new Error('Usuario no registrado')
+                res.status(404).json({error: error.message})
+                return
+            }
+            res.json(user)
+        } catch (e) {
+            const error = new Error('Accion no válida CATCH!')
+            res.status(500).json({error: error.message})
+        }
+    }
+
+    static getHandle = async (req: Request, res: Response) => { 
+        const { handle } = req.body
+        try {    
+            const handleExists = await User.findOne({handle})
+            if(handleExists) {
+                const error = new Error(`El ${handle} ya está registrado`)
+                res.status(409).json({error: error.message})
+                return
+            }
+            res.send(`EL ${handle} esta disponible`)
+        } catch (e) {
+            const error = new Error('Error en el search')
+            res.status(500).json({error: error.message})
+        }
+    }
 }
 
 export default UserController
